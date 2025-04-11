@@ -4,15 +4,17 @@ using namespace KamataEngine;
 using namespace MathUtility;
 
 
-void Particle::Initialize(Model* model) {
+void Particle::Initialize(Model* model, Vector3 position) {
 	assert(model);
 
 	model_ = model;
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
-	//色の設定
+	// 色の設定
 	objectColor_.Initialize();
 	color_ = {1, 1, 0, 1};
+
+	worldTransform_.translation_ = position;
 }
 
 void Particle::Update() {
