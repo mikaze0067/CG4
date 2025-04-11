@@ -2,8 +2,20 @@
 
 using namespace KamataEngine;
 
-void Particle::Initialize() {}
+void Particle::Initialize(Model* model) {
+	assert(model);
 
-void Particle::Update() {}
+	model_ = model;
+	// ワールド変換の初期化
+	worldTransform_.Initialize();
+}
 
-void Particle::Draw() {}
+void Particle::Update() {
+	//行列を定数バッファに転送
+	worldTransform_.TransferMatrix();
+}
+
+void Particle::Draw(Camera& camera) {
+	//3Dモデルを描画
+	model_->Draw(worldTransform_, camera);
+}
