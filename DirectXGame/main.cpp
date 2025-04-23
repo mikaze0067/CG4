@@ -14,6 +14,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// DirectXCommonインスタンスの取得
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 
+	//DirectXCommonクラスが管理しているウィンドウの幅と高さの値の取得
+	int32_t w = dxCommon->GetBackBufferWidth();
+	int32_t h = dxCommon->GetBackBufferHeight();
+	DebugText::GetInstance()->ConsolePrintf(
+		std::format("width: {}, height: {}\n", w, h).c_str());
+
+	//DirectXCommonクラスが管理しているコマンドリストの取得
+	ID3D12GraphicsCommandList* commandList = dxCommon->GetCommandList();
+
 	// ゲームシーンのインスタンス生成
 	GameScene* gameScene = new GameScene();
 	// ゲームシーンの初期化
@@ -60,11 +69,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region RasterizeState
-	D3D12_RASTERIZER_DESC rasterizeDesc{};
+	D3D12_RASTERIZER_DESC rasterizerDesc{};
 	//裏面（反時計回り）をカリングする
-	rasterizeDesc.CullMode = D3D12_CULL_MODE_BACK;
+	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	//塗りつぶしモードをソリッドにする（ワイヤーフレームならD3D12_FILL_MODE_WIREFRAME）
-	rasterizeDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 #pragma endregion
 
 #pragma region VertexShaderをCompile
@@ -73,7 +82,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	ID3DBlob* psBlob = nullptr;
 	ID3DBlob* errorBlob = nullptr;
 	//頂点シェーダーの読み込みとコンパイル
-	std::wstring vsFile = L"Resources/sahders/TestVS.hlsl";
+	std::wstring vsFile = L"Resources/shaders/TestVS.hlsl";
 	hr = D3DCompileFromFile(vsFile.c_str(),
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
@@ -93,7 +102,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region PixelShaderをCompile
 	//PixelShaderの読み込みとコンパイル
-	std::wstring psFile = L"Resource/Shaders/TestPS.hlsl";
+	std::wstring psFile = L"Resources/Shaders/TestPS.hlsl";
 	hr = D3DCompileFromFile(psFile.c_str(),
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
@@ -112,14 +121,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region PSO(PiplineStateObject)の生成
-
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 	graphicsPipelineStateDesc.pRootSignature = rootSignature;
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;
 	graphicsPipelineStateDesc.VS = {vsBlob->GetBufferPointer(), vsBlob->GetBufferSize()};
 	graphicsPipelineStateDesc.PS = {psBlob->GetBufferPointer(), psBlob->GetBufferSize()};
 	graphicsPipelineStateDesc.BlendState = blendDesc;
-	graphicsPipelineStateDesc.RasterizerState = rasterizeDesc;
+	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
 	//書き込むRTVの情報
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -133,7 +141,50 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	hr = dxCommon->GetDevice()->CreateGraphicsPipelineState(
 		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
+#pragma endregion
 
+#pragma region InputLyout
+	//頂点リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD; // CPUから書き込みヒープ
+	//頂点リソースの設定
+	D3D12_RESOURCE_DESC vertexResourceDesc{};
+	vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER; // バッファ
+	vertexResourceDesc.Width = sizeof(Vector4) * 3; //リソースのサイズ
+	//バッファの場合はこれらは1にする
+	vertexResourceDesc.Height = 1;
+	vertexResourceDesc.DepthOrArraySize = 1;
+	vertexResourceDesc.MipLevels = 1;
+	vertexResourceDesc.SampleDesc.Count = 1;
+	//バッファの場合はこれにする決まり
+	vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	//実際に頂点リソースを生成する
+	ID3D12Resource* vertexResource = nullptr;
+	hr = dxCommon->GetDevice()->CreateCommittedResource(
+		&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
+		&vertexResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr, IID_PPV_ARGS(&vertexResource));
+	assert(SUCCEEDED(hr)); //うまくいかなかったら動かない
+#pragma endregion
+
+#pragma region VertxBufferViewを作成
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+	//リソースの先頭アドレスから使う
+	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
+	//使用するリソースのサイズは頂点三つ分のサイズ
+	vertexBufferView.SizeInBytes = sizeof(Vector4) * 3;
+	//1つの頂点のサイズ
+	vertexBufferView.StrideInBytes = sizeof(Vector4);
+#pragma endregion
+
+#pragma region 頂点リソースにデータを書き込む
+	Vector4* vertexData = nullptr;
+	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	vertexData[0] = {-0.5f, -0.5f, 0.0f, 1.0f}; //左下
+	vertexData[1] = { 0.0f,  0.5f, 0.0f, 1.0f}; // 上
+	vertexData[2] = { 0.5f, -0.5f, 0.0f, 1.0f}; // 右下
+	//頂点リソースのマップを解除する
+	vertexResource->Unmap(0, nullptr);
 #pragma endregion
 
 
@@ -152,6 +203,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// ゲームシーンの描画
 		gameScene->Draw();
 
+		//コマンドを読む
+		commandList->SetGraphicsRootSignature(rootSignature); //rootsignatureの設定
+		commandList->SetPipelineState(graphicsPipelineState); //PSOの設定をする
+		commandList->IASetVertexBuffers(0, 1, &vertexBufferView); //VBVの設定
+		//トロポジの設定
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		//頂点数、インデックス数、インデックスの開始位置、インデックスのオフセット
+		commandList->DrawInstanced(3, 1, 0, 0);
+
 		// 描画終了
 		dxCommon->PostDraw();
 	}
@@ -160,6 +220,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	delete gameScene;
 	// nullptrの代入
 	gameScene = nullptr;
+
+	//解放処理
+	vertexResource->Release();
+	graphicsPipelineState->Release();
+	signatureBlob->Release();
+	if (errorBlob) {
+		errorBlob->Release();
+	}
+	rootSignature->Release();
+	vsBlob->Release();
+	psBlob->Release();
 
 	// エンジンの終了処理
 	KamataEngine::Finalize();
