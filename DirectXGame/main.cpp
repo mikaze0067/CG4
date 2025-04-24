@@ -7,6 +7,9 @@ using namespace KamataEngine;
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
+	// エンジンの初期化
+	KamataEngine::Initialize(L"LE3D_07_ササノ_ミカゼ_CG4");
+
 	// DirectXCommonインスタンスの取得
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 
@@ -14,9 +17,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	GameScene* gameScene = new GameScene();
 	// ゲームシーンの初期化
 	gameScene->Initialize();
-
-	// エンジンの初期化
-	KamataEngine::Initialize(L"LE3D_07_ササノ_ミカゼ_CG4");
 
 	// メインループ
 	while (true) {
