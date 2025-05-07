@@ -1,12 +1,9 @@
 #include "GameScene.h"
 #include "KamataEngine.h"
 #include <Windows.h>
-#include <d3dcompiler.h>
 #include "Shader.h"
 
 using namespace KamataEngine;
-
-ID3DBlob* CompileShader(const std::wstring& filePath, const std::string& shaderModel);
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
