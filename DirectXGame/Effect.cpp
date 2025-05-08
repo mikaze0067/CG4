@@ -10,6 +10,8 @@ void Effect::Initialize(KamataEngine::Model* model) {
 	// 色の設定
 	objectColor_.Initialize();
 	color_ = {1, 1, 0, 1};
+	worldTransform_.rotation_.x = 90;
+	worldTransform_.rotation_.y = 180;
 }
 
 void Effect::Update() {
