@@ -10,11 +10,12 @@ void Effect::Initialize(KamataEngine::Model* model) {
 	// 色の設定
 	objectColor_.Initialize();
 	color_ = {1, 1, 0, 1};
-	worldTransform_.rotation_.x = 90;
-	worldTransform_.rotation_.y = 180;
+	
 }
 
 void Effect::Update() {
+	worldTransform_.translation_.x += 1.0f;
+
 	//行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
 	//色変更オブジェクトに色の数値を設定する
