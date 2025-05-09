@@ -1,7 +1,10 @@
 #include "Effect.h"
 
+using namespace KamataEngine;
+using namespace MathUtility;
 
-void Effect::Initialize(KamataEngine::Model* model) {
+
+void Effect::Initialize(KamataEngine::Model* model, Vector3 position) {
 	assert(model);
 
 	model_ = model;
@@ -10,11 +13,12 @@ void Effect::Initialize(KamataEngine::Model* model) {
 	// 色の設定
 	objectColor_.Initialize();
 	color_ = {1, 1, 0, 1};
-	
+
+	worldTransform_.translation_ = position;
 }
 
 void Effect::Update() {
-	worldTransform_.translation_.x += 1.0f;
+	worldTransform_.rotation_ += {0.0f, 0.1f, 0.0f};
 
 	//行列を定数バッファに転送
 	worldTransform_.TransferMatrix();

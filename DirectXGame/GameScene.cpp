@@ -14,10 +14,12 @@ void GameScene::Initialize() {
 	// カメラの初期化
 	camera_.Initialize();
 
+	Vector3 position = {0.0f, 0.0f, 0.0f};
+
 	// パーティクルの生成
 	effect_ = new Effect();
 	// パーティクルの初期化
-	effect_->Initialize(modelEffect_);
+	effect_->Initialize(modelEffect_, position);
 }
 
 void GameScene::Update() {
