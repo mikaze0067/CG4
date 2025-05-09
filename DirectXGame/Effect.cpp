@@ -18,7 +18,6 @@ void Effect::Initialize(KamataEngine::Model* model, Vector3 position) {
 }
 
 void Effect::Update() {
-	worldTransform_.rotation_ += {0.0f, 0.1f, 0.0f};
 
 	//行列を定数バッファに転送
 	worldTransform_.TransferMatrix();

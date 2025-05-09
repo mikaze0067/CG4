@@ -9,7 +9,7 @@ GameScene::~GameScene() {// 3Dモデルデータの解放
 
 void GameScene::Initialize() {
 	// 3Dモデルデータの生成
-	modelEffect_ = Model::CreateFromOBJ("cube", true);
+	modelEffect_ = Model::CreateFromOBJ("Hishigata", true);
 
 	// カメラの初期化
 	camera_.Initialize();
