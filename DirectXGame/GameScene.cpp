@@ -1,6 +1,11 @@
 #include "GameScene.h"
+#include <random>
 
 using namespace KamataEngine;
+using namespace MathUtility;
+std::random_device seedGenerator;
+std::mt19937 randomEngine(seedGenerator());
+std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
 
 GameScene::~GameScene() {// 3Dモデルデータの解放
 	delete modelEffect_;
@@ -18,8 +23,15 @@ void GameScene::Initialize() {
 
 	// パーティクルの生成
 	effect_ = new Effect();
+	// 位置
+	Vector3 position = {0.0, 0.0f, 0.0f};
+	// 移動量
+	Vector3 velocity = {distribution(randomEngine), distribution(randomEngine), 0};
+	Normalize(velocity);
+	velocity *= distribution(randomEngine);
+	velocity *= 0.1f;
 	// パーティクルの初期化
-	effect_->Initialize(modelEffect_, position);
+	effect_->Initialize(modelEffect_, position, velocity);
 }
 
 void GameScene::Update() {

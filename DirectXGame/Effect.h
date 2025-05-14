@@ -8,7 +8,7 @@ using namespace MathUtility;
 class Effect {
 public:
 	// 初期化
-	void Initialize(KamataEngine::Model* model, Vector3 position);
+	void Initialize(KamataEngine::Model* model, Vector3 position, Vector3 velocity);
 
 	// 更新
 	void Update();
@@ -26,4 +26,6 @@ private:
 	KamataEngine::ObjectColor objectColor_;
 	// 色の数値
 	KamataEngine::Vector4 color_;
+	// 移動量
+	Vector3 velocity_;
 };
