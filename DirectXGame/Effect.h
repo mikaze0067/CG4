@@ -16,6 +16,13 @@ public:
 	// 描画
 	void Draw(KamataEngine::Camera& camera);
 
+	void SetScaleY(float scaleY) {
+		worldTransform_.scale_.y = scaleY;
+	}
+
+	void SetRotationZ(float rotationZ) {
+		worldTransform_.rotation_.z = rotationZ;
+	}
 
 private:
 	// ワールド変換データ

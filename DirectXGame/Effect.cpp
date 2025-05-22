@@ -17,7 +17,7 @@ void Effect::Initialize(KamataEngine::Model* model, Vector3 position, Vector3 ve
 	worldTransform_.translation_ = position;
 	velocity_ = velocity;
 	// 大きさ
-	worldTransform_.scale_ = {0.2f, 0.2f, 0.2f};
+	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 }
 
 void Effect::Update() {
@@ -25,7 +25,7 @@ void Effect::Update() {
 	// 移動
 	worldTransform_.translation_ += velocity_;
 	//行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
+	worldTransform_.UpdateMatrix();
 	//色変更オブジェクトに色の数値を設定する
 	objectColor_.SetColor(color_);
 }
