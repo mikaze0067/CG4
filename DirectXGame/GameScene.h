@@ -22,6 +22,10 @@ public:
 
 private:
 
+	KamataEngine::DirectXCommon* dxCommon_ = nullptr;
+	KamataEngine::Input* input_ = nullptr;
+	KamataEngine::Audio* audio_ = nullptr;
+
 	// エフェクトの3Dモデルデータ
 	Model* modelEffect_ = nullptr;
 	// カメラ
