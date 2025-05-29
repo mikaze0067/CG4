@@ -8,7 +8,7 @@ using namespace MathUtility;
 class Effect {
 public:
 	// 初期化
-	void Initialize(KamataEngine::Model* model, Vector3 position);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Vector3 position, KamataEngine::Vector3 scale, KamataEngine::Vector3 rotation);
 
 	// 更新
 	void Update();
