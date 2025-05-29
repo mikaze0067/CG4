@@ -43,6 +43,14 @@ void GameScene::Update() {
 	for (Effect* effect : effects_) {
 		effect->Update();
 	}
+	// 終了フラグの立ったパーティクルを削除
+	effects_.remove_if([](Effect* effect) {
+		if (effect->IsFinished()) {
+			effect->Update();
+			return true;
+		}
+		return false;
+	});
 }
 
 void GameScene::Draw() {
