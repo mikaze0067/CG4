@@ -2,8 +2,6 @@
 #include "KamataEngine.h"
 #include "Effect.h"
 
-using namespace KamataEngine;
-
 // ゲームシーン
 class GameScene {
 public:
@@ -19,7 +17,7 @@ public:
 	void Draw();
 
 	// パーティクル発生
-	void ParticleBorn(Vector3 position);
+	void ParticleBorn(KamataEngine::Vector3 position);
 
 private:
 
@@ -28,9 +26,9 @@ private:
 	KamataEngine::Audio* audio_ = nullptr;
 
 	// エフェクトの3Dモデルデータ
-	Model* modelEffect_ = nullptr;
+	KamataEngine::Model* modelEffect_ = nullptr;
 	// カメラ
-	Camera camera_;
+	KamataEngine::Camera camera_;
 	//エフェクト
 	std::list<Effect*> effects_;
 

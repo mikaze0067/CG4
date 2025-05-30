@@ -1,55 +1,82 @@
 #include "Effect.h"
 #include <algorithm>
+#include <random>
 
 using namespace KamataEngine;
 using namespace MathUtility;
 
-
-void Effect::Initialize(KamataEngine::Model* model, KamataEngine::Vector3 position, KamataEngine::Vector3 scale, KamataEngine::Vector3 rotation) {
+void Effect::Initialize(Model* model, Vector3 position, Vector3 scale, Vector3 rotation) {
 	assert(model);
 
 	model_ = model;
-	// ワールド変換の初期化
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
-	worldTransform_.scale_ = scale;
+	startScale_ = scale * 0.1f;
+	targetScale_ = scale;
+	worldTransform_.scale_ = startScale_;
 	worldTransform_.rotation_ = rotation;
 
-	// 色の設定
-	objectColor_.Initialize();
+	 objectColor_.Initialize();
 	color_ = {1, 1, 0, 1};
+	objectColor_.SetColor(color_);
 
-	
+	counter_ = 0.0f;
+	isFinished_ = false;
+
+	// 回転速度
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+	rotationSpeed_ = {dist(gen) * 3.0f, dist(gen) * 3.0f, dist(gen) * 3.0f}; // 各軸ごと
 }
 
 void Effect::Update() {
-
-	// 終了なら何もしない
-	if (isFinished_) {
+	if (isFinished_)
 		return;
-	}
 
-	// カウンター7うぃ1フレーム分の秒数を進める
 	counter_ += 1.0f / 60.0f;
-
-	// 存続時間の上限に達したら
 	if (counter_ >= kDuration) {
 		counter_ = kDuration;
-		// 終了扱いにする
 		isFinished_ = true;
 	}
 
-	// フェード処理
-	color_.w = std::clamp(1.0f - counter_ / kDuration, 0.0f, 1.0f);
+	// 寿命の進行度
+	float progress = counter_ / kDuration;
 
-	// 行列を定数バッファに転送
+	// スケール補間
+	worldTransform_.scale_ = Lerp(startScale_, targetScale_, progress);
+
+	// 透明度フェード
+	//color_.w = std::clamp(1.0f - progress, 0.0f, 1.0f);
+
+	worldTransform_.rotation_ += rotationSpeed_ * (1.0f / 60.0f);
+
+	 // 色変化 (赤→黄→透明)
+	Vector4 startColor = {1, 0, 0, 1};  // 赤
+	Vector4 middleColor = {1, 1, 0, 1}; // 黄
+	Vector4 endColor = {1, 1, 0, 0};    // 黄 + 透明
+
+	if (progress < 0.7f) {
+		// 赤→白
+		color_ = LerpColor(startColor, middleColor, progress / 0.7f);
+	} else {
+		// 白→透明
+		color_ = LerpColor(middleColor, endColor, (progress - 0.7f) / 0.3f);
+	}
+
 	worldTransform_.UpdateMatrix();
-	// 色変更オブジェクトに色の数値を設定する
 	objectColor_.SetColor(color_);
 }
 
-void Effect::Draw(KamataEngine::Camera& camera) {
-	// 3Dモデルを描画
-	model_->Draw(worldTransform_, camera, &objectColor_);
-}
+void Effect::Draw(Camera& camera) { model_->Draw(worldTransform_, camera, &objectColor_); }
 
+Vector3 Effect::Lerp(const Vector3& start, const Vector3& end, float t) { return start + (end - start) * t; }
+
+Vector4 Effect::LerpColor(const Vector4& start, const Vector4& end, float t) {
+	Vector4 result;
+	result.x = start.x + (end.x - start.x) * t;
+	result.y = start.y + (end.y - start.y) * t;
+	result.z = start.z + (end.z - start.z) * t;
+	result.w = start.w + (end.w - start.w) * t;
+	return result;
+}
