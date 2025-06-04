@@ -1,6 +1,7 @@
 #include "Effect.h"
 #include <algorithm>
 #include <random>
+#include <cassert>
 
 using namespace KamataEngine;
 using namespace MathUtility;
