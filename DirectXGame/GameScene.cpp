@@ -4,7 +4,9 @@ using namespace KamataEngine;
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { Model2::StaticFinalize(); }
+GameScene::~GameScene() {
+	Model2::StaticFinalize();
+}
 
 void GameScene::Initialize() {
 
