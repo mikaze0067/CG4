@@ -71,10 +71,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//頂点データ準備
 	VertexData vertices[] = {
-	    { 0.0f,  0.5f, 0.0f, 1.0f}, //  上
-	    { 0.5f, -0.5f, 0.0f, 1.0f}, //  右下
-	    {-0.5f, -0.5f, 0.0f, 1.0f}, //  左下
+	    {-1.0f,  1.0f, 0.0f, 1.0f}, // 左上
+	    { 1.0f,  1.0f, 0.0f, 1.0f}, // 右上
+	    { 1.0f, -1.0f, 0.0f, 1.0f}, // 右下
+	    {-1.0f, -1.0f, 0.0f, 1.0f}, // 左下
 	};
+
 #pragma endregion
 
 #pragma region VertxBuffer
@@ -93,10 +95,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region 頂点インデックスデータの準備
 	uint16_t indices[] = {
-	    0,
-	    1,
-	    2,
+	    0, 1, 2, // 左上 右上 右下
+	    2, 3, 0, // 右下 左下 左上
 	};
+
 
 #pragma endregion
 
@@ -139,7 +141,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//トロポジの設定
 		//頂点数、インデックス数、インデックスの開始位置、インデックスのオフセット
 		//commandList->DrawInstanced(3, 1, 0, 0);
-		commandList->DrawIndexedInstanced(_countof(indices), 1, 1, 0, 0);
+		commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 
 		// 描画終了
 		dxCommon->PostDraw();
