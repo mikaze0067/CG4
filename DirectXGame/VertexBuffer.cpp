@@ -6,7 +6,7 @@ using namespace KamataEngine;
 void VertexBuffer::Create(const UINT size, const UINT stride) {
 	// クラス内で取得するために追加
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
-#pragma region InputLyout
+#pragma region 
 
 	// 頂点リソース用のヒープの設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};

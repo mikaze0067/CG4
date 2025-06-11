@@ -5,6 +5,7 @@
 #include "RootSignature.h"
 #include "PipelineState.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 using namespace KamataEngine;
 
@@ -56,31 +57,61 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	assert(ps.GetDxcBlob() != nullptr);
 #pragma endregion
 
-#pragma region PSO(PiplineStateObject)の生成
+#pragma region PSO(PipelineStateObject)の生成
 
 	PipelineState pipelineState;
 	SetupPipelineState(pipelineState, rs, vs, ps);
 
 #pragma endregion
 
+#pragma region VertxDataを作成
+	struct VertexData {
+		Vector4 position;
+	};
+
+	//頂点データ準備
+	VertexData vertices[] = {
+	    { 0.0f,  0.5f, 0.0f, 1.0f}, //  上
+	    { 0.5f, -0.5f, 0.0f, 1.0f}, //  右下
+	    {-0.5f, -0.5f, 0.0f, 1.0f}, //  左下
+	};
+#pragma endregion
 
 #pragma region VertxBuffer
 	VertexBuffer vb;
-	vb.Create(sizeof(Vector4) * 3, sizeof(Vector4));
+	vb.Create(sizeof(vertices), sizeof(vertices[0]));
+
+	//頂点リソースにデータを書き込む
+	VertexData* pGpuVertices = nullptr;
+	vb.Get()->Map(0, nullptr, reinterpret_cast<void**>(&pGpuVertices));
+
+	for (int i = 0; i < _countof(vertices); ++i) {
+		pGpuVertices[i] = vertices[i];
+	}
+
 #pragma endregion
 
-#pragma region VertxBufferViewを作成
-	
+#pragma region 頂点インデックスデータの準備
+	uint16_t indices[] = {
+	    0,
+	    1,
+	    2,
+	};
+
 #pragma endregion
 
-#pragma region 頂点リソースにデータを書き込む
-	Vector4* vertexData = nullptr;
-	vb.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-	vertexData[0] = {-0.5f, -0.5f, 0.0f, 1.0f}; //左下
-	vertexData[1] = { 0.0f,  0.5f, 0.0f, 1.0f}; // 上
-	vertexData[2] = { 0.5f, -0.5f, 0.0f, 1.0f}; // 右下
-	//頂点リソースのマップを解除する
-	//vb.Get()->Unmap(0, nullptr);
+#pragma region IndexBuffer
+	IndexBuffer ib;
+	ib.Create(sizeof(indices), sizeof(indices[0]));
+
+	// 頂点リソースにデータを書き込む
+	uint16_t* pGpuIndices = nullptr;
+	ib.Get()->Map(0, nullptr, reinterpret_cast<void**>(&pGpuIndices));
+
+	for (int i = 0; i < _countof(indices); ++i) {
+		pGpuIndices[i] = indices[i];
+	}
+
 #pragma endregion
 
 
@@ -101,12 +132,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//コマンドを読む
 		commandList->SetGraphicsRootSignature(rs.Get()); //rootsignatureの設定
-		commandList->SetPipelineState(pipelineState.Get()); //PSOの設定をする
+
+		commandList->SetPipelineState(pipelineState.Get());  //PSOの設定をする
 		commandList->IASetVertexBuffers(0, 1, vb.GetView()); //VBVの設定
-		//トロポジの設定
-		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		commandList->IASetIndexBuffer(ib.GetView());		 //IBVの設定
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//トロポジの設定
 		//頂点数、インデックス数、インデックスの開始位置、インデックスのオフセット
-		commandList->DrawInstanced(3, 1, 0, 0);
+		//commandList->DrawInstanced(3, 1, 0, 0);
 
 		// 描画終了
 		dxCommon->PostDraw();
