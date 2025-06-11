@@ -139,6 +139,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//トロポジの設定
 		//頂点数、インデックス数、インデックスの開始位置、インデックスのオフセット
 		//commandList->DrawInstanced(3, 1, 0, 0);
+		commandList->DrawIndexedInstanced(_countof(indices), 1, 1, 0, 0);
 
 		// 描画終了
 		dxCommon->PostDraw();
