@@ -24,7 +24,7 @@ void GameScene::Draw() {
 	// 3Dモデル描画前処理
 	Model::PreDraw(dxCommon->GetCommandList());
 	// パーティクル描画
-	model2_->Draw();
+	//model2_->Draw();
 
 	// 3Dモデル描画後処理
 	Model::PostDraw();
