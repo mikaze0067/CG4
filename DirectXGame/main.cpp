@@ -101,7 +101,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	    2, 3, 0, // 右下 左下 左上
 	};
 
-
 #pragma endregion
 
 #pragma region IndexBuffer
