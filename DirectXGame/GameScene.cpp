@@ -14,7 +14,15 @@ void GameScene::Initialize() {
 
 	model2_ = Model2::Create();
 
+	// カメラの初期化
+	camera_.Initialize();
 
+	Vector3 position = {0.0f, 0.0f, 0.0f};
+
+	// パーティクルの生成
+	effect_ = new Effect();
+	// パーティクルの初期化
+	effect_->Initialize(model2_, position);
 }
 
 void GameScene::Update() {}
@@ -26,7 +34,7 @@ void GameScene::Draw() {
 	// 3Dモデル描画前処理
 	Model2::PreDraw(dxCommon->GetCommandList());
 	// パーティクル描画
-	model2_->Draw();
+	effect_->Draw(camera_);
 
 	// 3Dモデル描画後処理
 	Model2::PostDraw();
