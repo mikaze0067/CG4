@@ -28,4 +28,8 @@ private:
 
 	// 3Dモデルデータ
 	KamataEngine::Model2* model2_ = nullptr;
+	// カメラ
+	KamataEngine::Camera camera_;
+	// エフェクト
+	KamataEngine::Effect* effect_ = nullptr;
 };

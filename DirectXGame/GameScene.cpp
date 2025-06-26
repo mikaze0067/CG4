@@ -13,6 +13,8 @@ void GameScene::Initialize() {
 	Model2::StaticInitialize();
 
 	model2_ = Model2::Create();
+
+
 }
 
 void GameScene::Update() {}
@@ -22,11 +24,11 @@ void GameScene::Draw() {
 // DirectXCommon インスタンスの取得
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	// 3Dモデル描画前処理
-	Model::PreDraw(dxCommon->GetCommandList());
+	Model2::PreDraw(dxCommon->GetCommandList());
 	// パーティクル描画
-	//model2_->Draw();
+	model2_->Draw();
 
 	// 3Dモデル描画後処理
-	Model::PostDraw();
+	Model2::PostDraw();
 }
 
