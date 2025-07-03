@@ -12,7 +12,7 @@ void GameScene::Initialize() {
 
 	Model2::StaticInitialize();
 
-	model2_ = Model2::Create();
+	model2_ = Model2::CreateSquare();
 
 	// カメラの初期化
 	camera_.Initialize();
