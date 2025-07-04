@@ -275,7 +275,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		commandList->ClearDepthStencilView(dsvHandeleCPU, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 		//描画
-
+		//  ゲームシーンの描画
+		gameScene->Draw();
 
 		// TransitionBarrierをもとに戻し、PixelShaderが扱えるようにする
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -286,8 +287,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		commandList->ResourceBarrier(1, &barrier);
 
 
-		// ゲームシーンの描画
-		gameScene->Draw();
+		
 
 		// 描画開始
 		dxCommon->PreDraw();
