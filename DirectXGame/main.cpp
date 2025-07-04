@@ -235,7 +235,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 		// ゲームシーンの更新
 		gameScene->Update();
-
+		// ゲームシーンの描画
+		gameScene->Draw();
 		//TransitionBarrierをSRV→RTVに設定する
 		D3D12_RESOURCE_BARRIER barrier{};
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -286,8 +287,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		commandList->ResourceBarrier(1, &barrier);
 
 
-		// ゲームシーンの描画
-		gameScene->Draw();
+		
 
 		// 描画開始
 		dxCommon->PreDraw();
