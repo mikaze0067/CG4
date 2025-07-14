@@ -6,6 +6,7 @@
 #include "PipelineState.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "WorldTransformEX.h"
 
 using namespace KamataEngine;
 
@@ -225,6 +226,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	);
 #pragma endregion
 
+#pragma region アプリで利用する3Dモデル
+	//被写体の準備
+	Model* model = Model::CreateFromOBJ("terrain");
+
+	WorldTransformEX worldTransform;
+	worldTransform.Initialize();
+	worldTransform.scale_ = Vector3(1.0f, 1.0f, 1.0f);
+
+	//カメラの準備
+	Camera camera;
+	camera.Initialize();
+	camera.translation_ = Vector3(0.0f, 1.0f, 0.0f);
+
 
 
 	// メインループ
@@ -233,6 +247,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		if (KamataEngine::Update()) {
 			break;
 		}
+
+		//world変換行列の定数バッファへの転送
+		worldTransform.rotation_.y += 0.005f;
+		worldTransform.UpdateMatrix();
+
+		//cameraの更新と定数バッファへの転送
+		camera.UpdateMatrix();
+
 		// ゲームシーンの更新
 		gameScene->Update();
 
@@ -275,7 +297,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		commandList->ClearDepthStencilView(dsvHandeleCPU, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 		//描画
-		//  ゲームシーンの描画
+		Model::PreDraw(commandList);
+		model->Draw(worldTransform, camera);
+		Model::PostDraw();
+		
+		// ゲームシーンの描画
 		gameScene->Draw();
 
 		// TransitionBarrierをもとに戻し、PixelShaderが扱えるようにする
@@ -315,6 +341,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// ゲームシーンの解放
 	delete gameScene;
+	delete model;
 	// nullptrの代入
 	gameScene = nullptr;
 
