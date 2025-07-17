@@ -4,19 +4,23 @@ using namespace KamataEngine;
 
 TitleScene::TitleScene() {}
 
-TitleScene::~TitleScene() { delete sprite_; }
+TitleScene::~TitleScene() {
+	delete sprite_;
+}
 
 void TitleScene::Initialize() {
 
-	textureHandle_ = TextureManager::Load("White.png");
+	textureHandle_ = TextureManager::Load("game.png");
 
 	sprite_ = Sprite::Create(textureHandle_, {0, 0});
 
 }
 
 void TitleScene::Update() {
+	frame++;
+	float y = 45 * sin(frame * 0.05f);
 
-
+	sprite_->SetPosition({0.0f, y});
 }
 
 void TitleScene::Draw() {

@@ -28,4 +28,7 @@ private:
 	uint32_t textureHandle_ = 0;
 
 	KamataEngine::Sprite* sprite_ = nullptr;
+
+
+	int frame = 0;
 };

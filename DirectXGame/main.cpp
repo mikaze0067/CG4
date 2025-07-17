@@ -33,6 +33,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 		// ゲームシーンの更新
 		gameScene->Update();
+		// タイトルシーンの更新
+		titleScene->Update();
 
 		// 描画開始
 		dxCommon->PreDraw();
