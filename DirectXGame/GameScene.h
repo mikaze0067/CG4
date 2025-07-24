@@ -1,5 +1,7 @@
 #pragma once
 #include "KamataEngine.h"
+#include "BackGround.h"
+
 
 // ゲームシーン
 class GameScene {
@@ -12,4 +14,8 @@ public:
 
 	// 描画
 	void Draw();
+
+private:
+	BackGround* backGround = nullptr;
+
 };

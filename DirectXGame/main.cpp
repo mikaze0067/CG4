@@ -1,7 +1,6 @@
 #include "GameScene.h"
 #include "KamataEngine.h"
 #include <Windows.h>
-#include "BackGround.h"
 
 using namespace KamataEngine;
 
@@ -19,10 +18,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// ゲームシーンの初期化
 	gameScene->Initialize();
 
-	// ゲームシーンのインスタンス生成
-	BackGround* backGround = new BackGround();
-	// ゲームシーンの初期化
-	backGround->Initialize();
+	
 
 	// メインループ
 	while (true) {
@@ -33,15 +29,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// ゲームシーンの更新
 		gameScene->Update();
 
-		backGround->Update();
-
 		// 描画開始
 		dxCommon->PreDraw();
 
 		// ゲームシーンの描画
 		gameScene->Draw();
 
-		backGround->Draw();
 
 		// 描画終了
 		dxCommon->PostDraw();
@@ -49,10 +42,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// ゲームシーンの解放
 	delete gameScene;
-	delete backGround;
 	// nullptrの代入
 	gameScene = nullptr;
-	backGround = nullptr;
 
 	// エンジンの終了処理
 	KamataEngine::Finalize();

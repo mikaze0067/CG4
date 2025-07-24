@@ -2,8 +2,20 @@
 
 using namespace KamataEngine;
 
-void GameScene::Initialize() {}
+void GameScene::Initialize() {
 
-void GameScene::Update() {}
+	// ゲームシーンのインスタンス生成
+	backGround = new BackGround();
+	// ゲームシーンの初期化
+	backGround->Initialize();
+}
 
-void GameScene::Draw() {}
+void GameScene::Update() {
+
+	backGround->Update();
+}
+
+void GameScene::Draw() {
+
+	backGround->Draw(); 
+}
