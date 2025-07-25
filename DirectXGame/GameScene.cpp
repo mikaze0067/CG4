@@ -17,7 +17,7 @@ void GameScene::Initialize() {
 
 	Model2::StaticInitialize();
 
-	model2_ = Model2::CreateSquare();
+	model2_ = Model2::CreateFromOBJ("player", true);
 
 	// カメラの初期化
 	camera_.Initialize();
@@ -51,7 +51,7 @@ void GameScene::Draw() {
 	// 3Dモデル描画前処理
 	Sprite::PreDraw(dxCommon->GetCommandList());
 
-	backGround->Draw();
+	//backGround->Draw();
 
 	// 3Dモデル描画後処理
 	Sprite::PostDraw();
