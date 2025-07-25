@@ -1,10 +1,9 @@
-#include "Effect.h"
+#include "Player.h"
 
 using namespace KamataEngine;
 using namespace MathUtility;
 
-
-void Effect::Initialize(KamataEngine::Model2* model, Vector3 position) {
+void Player::Initialize(KamataEngine::Model2* model, Vector3 position) {
 	assert(model);
 
 	model2_ = model;
@@ -17,16 +16,15 @@ void Effect::Initialize(KamataEngine::Model2* model, Vector3 position) {
 	worldTransform_.translation_ = position;
 }
 
-void Effect::Update() {
+void Player::Update() {
 
-	//行列を定数バッファに転送
+	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
-	//色変更オブジェクトに色の数値を設定する
+	// 色変更オブジェクトに色の数値を設定する
 	objectColor_.SetColor(color_);
 }
 
-void Effect::Draw(KamataEngine::Camera& camera) {
+void Player::Draw(KamataEngine::Camera& camera) {
 	// 3Dモデルを描画
 	model2_->Draw(worldTransform_, camera, &objectColor_);
 }
-

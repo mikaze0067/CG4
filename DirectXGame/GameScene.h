@@ -1,7 +1,8 @@
 #pragma once
 #include "KamataEngine.h"
 #include "Model2.h"
-#include "Effect.h"
+#include "Player.h"
+#include "BackGround.h"
 
 // ゲームシーン
 class GameScene {
@@ -23,7 +24,7 @@ public:
 
 private:
 
-	KamataEngine::DirectXCommon* dxCommon_ = nullptr;
+	KamataEngine::DirectXCommon* dxCommon = nullptr;
 	KamataEngine::Input* input_ = nullptr;
 	KamataEngine::Audio* audio_ = nullptr;
 
@@ -32,5 +33,7 @@ private:
 	// カメラ
 	KamataEngine::Camera camera_;
 	// エフェクト
-	Effect* effect_ = nullptr;
+	Player* player_ = nullptr;
+
+	BackGround* backGround = nullptr;
 };
