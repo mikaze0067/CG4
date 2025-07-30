@@ -3,6 +3,7 @@
 #include "Model2.h"
 #include "Player.h"
 #include "BackGround.h"
+#include "GraphBar.h"
 
 // ゲームシーン
 class GameScene {
@@ -36,4 +37,7 @@ private:
 	Player* player_ = nullptr;
 
 	BackGround* backGround = nullptr;
+
+	GraphBar* graphBar_ = nullptr;
+	float hpRatio_ = 1.0f;
 };

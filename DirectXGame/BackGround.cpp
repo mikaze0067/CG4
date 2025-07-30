@@ -4,14 +4,16 @@ using namespace KamataEngine;
 
 BackGround::BackGround() {}
 
-BackGround::~BackGround() { delete sprite_; }
+BackGround::~BackGround() {
+	delete sprite_;
+	delete sprite2_;
+}
 
 void BackGround::Initialize() {
-
 	textureHandle_ = TextureManager::Load("BG.png");
 
 	sprite_ = Sprite::Create(textureHandle_, {0, 0});
-	sprite2_ = Sprite::Create(textureHandle_, {0, 0}); // 同じ画像
+	sprite2_ = Sprite::Create(textureHandle_, {0, 0}); // 同じ画像を使用
 }
 
 void BackGround::Update() {
@@ -25,11 +27,10 @@ void BackGround::Update() {
 }
 
 void BackGround::Draw() {
-	// 描画
+	// 描画位置の設定と描画処理
 	sprite_->SetPosition({scrollX_, 0});
 	sprite_->Draw();
 
 	sprite2_->SetPosition({scrollX_ + screenWidth_, 0});
 	sprite2_->Draw();
-
 }
