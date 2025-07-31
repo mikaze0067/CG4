@@ -9,7 +9,7 @@ GameScene::~GameScene() {
 	delete backGround;
 	delete player_;
 	delete graphBar_;
-	delete score_; // スコアの破棄
+	delete score_;
 }
 
 void GameScene::Initialize() {
@@ -30,8 +30,8 @@ void GameScene::Initialize() {
 	graphBar_ = new GraphBar();
 	graphBar_->Initialize(Vector2(50, 100), Vector2(200, 20));
 
-	score_ = new Score();                // スコアの生成
-	score_->Initialize(Vector2(50, 50)); // 表示位置を指定
+	score_ = new Score();
+	score_->Initialize(Vector2(50, 50));
 }
 
 void GameScene::Update() {
@@ -50,7 +50,7 @@ void GameScene::Update() {
 
 	if (score_) {
 		static int testScore = 0;
-		testScore += 1; // 仮に毎フレームスコアを1加算
+		testScore += 1;
 		score_->SetScore(testScore);
 	}
 }
