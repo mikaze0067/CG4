@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "BackGround.h"
 #include "GraphBar.h"
+#include "Score.h"
 
 // ゲームシーン
 class GameScene {
@@ -40,4 +41,5 @@ private:
 
 	GraphBar* graphBar_ = nullptr;
 	float hpRatio_ = 1.0f;
+	Score* score_ = nullptr;
 };

@@ -9,6 +9,7 @@ GameScene::~GameScene() {
 	delete backGround;
 	delete player_;
 	delete graphBar_;
+	delete score_; // スコアの破棄
 }
 
 void GameScene::Initialize() {
@@ -28,22 +29,29 @@ void GameScene::Initialize() {
 
 	graphBar_ = new GraphBar();
 	graphBar_->Initialize(Vector2(50, 100), Vector2(200, 20));
-}
 
-// メンバ変数としてfloat hpRatio_をGameSceneクラスに追加してください
+	score_ = new Score();                // スコアの生成
+	score_->Initialize(Vector2(50, 50)); // 表示位置を指定
+}
 
 void GameScene::Update() {
 	backGround->Update();
 	player_->Update();
 
 	// HPバーの値を減らす
-	hpRatio_ -= 0.005f; // 減るスピードは調整可
+	hpRatio_ -= 0.005f;
 	if (hpRatio_ < 0.0f) {
-		hpRatio_ = 1.0f; // 0になったら戻す
+		hpRatio_ = 1.0f;
 	}
 
 	if (graphBar_) {
 		graphBar_->Update(hpRatio_);
+	}
+
+	if (score_) {
+		static int testScore = 0;
+		testScore += 1; // 仮に毎フレームスコアを1加算
+		score_->SetScore(testScore);
 	}
 }
 
@@ -56,6 +64,10 @@ void GameScene::Draw() {
 
 	if (graphBar_) {
 		graphBar_->Draw();
+	}
+
+	if (score_) {
+		score_->Draw();
 	}
 
 	Sprite::PostDraw();
